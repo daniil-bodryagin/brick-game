@@ -1,12 +1,24 @@
 let controller = {
     interval: function(){},
-    active: false,
-    play(){
-        controller.active = true;
+    //states: gameChoice, paused, active, gameEnd
+    state: "gameChoice",
+    game: 1,
+    maxGame: 1,
+    level: 1,
+    maxLevel: 15,
+    //speed !=0
+    speed: 1,
+    maxSpeed: 15,
+    deviceOn(){
+        view.drawGameChoice();
+        view.drawMenu();
+    },
+    startGame(){
+        clearInterval(this.interval);
         model.init();
         view.draw();
         view.drawMenu();
-        controller.interval = setInterval(controller.cycle, 1000/model.speed);
+        this.interval = setInterval(this.cycle, 1000/this.speed);
     },
     cycle(){
         model.step();
@@ -14,72 +26,179 @@ let controller = {
     },
     check(){
         if (model.collision()) {
-            controller.active = false;
-            clearInterval(controller.interval);
-            view.drawText("lose");
+            this.state = "gameEnd";
+            clearInterval(this.interval);
+            view.drawText(view.finalTextLose);
         }
         else if (model.finish()) {
-            controller.active = false;
-            clearInterval(controller.interval);
-            view.drawText("win");
+            this.state = "gameEnd";
+            clearInterval(this.interval);
+            view.drawText(view.finalTextWin);
         }
         else {
             view.draw();
         }
     },
+    rotate(counter, maxCounter){
+        if (counter < maxCounter) {
+            counter++;
+        }
+        else {
+            counter = 1;
+        }
+        return counter;
+    },
     drive(key){
-        if (key.code == "ArrowLeft") {
-            if (model.carShift > 1 && controller.active){
-                model.carShift--;
-                controller.check();
-            }
-        }
-        else if (key.code == "ArrowRight") {
-            if (model.carShift < model.bufferWidth - 1 - model.car[0].length && controller.active) {
-                model.carShift++;
-                controller.check();
-            }
-        }
-        else if (key.code == "Pause"){
-            if (controller.active){
-                clearInterval(controller.interval);
-                controller.active = false;
-            }
-            else {
-                controller.interval = setInterval(controller.cycle, 1000/(model.speed+1));
-                controller.active = true;
-            }
-        }
-        else if (key.code == "Numpad0") {
-            clearInterval(controller.interval);
-            controller.play();
-        }
-        else if (key.code == "Numpad5") {
-            if (!controller.active){
-                if (model.speed < 10) {
-                    model.speed++;
-                }
-                else {
-                    model.speed = 1;
-                }
+        //Start/Pause = Numpad1
+        //Restart = Numpad2
+        //Up = ArrowUp
+        //Down = ArrowDown
+        //Left/Level = ArrowLeft
+        //Right/Speed = ArrowRight
+        //Rotate/GameChoice = Numpad0
+        if (this.state === "gameChoice"){
+            if (key.code == "ArrowRight") {
+                this.speed = this.rotate(this.speed, this.maxSpeed);
                 view.drawMenu();
+            }
+            else if (key.code == "ArrowLeft") {
+                this.level = this.rotate(this.level, this.maxLevel);
+                view.drawMenu();
+            }
+            else if (key.code == "Numpad0") {
+                this.game = this.rotate(this.game, this.maxGame);
+                view.drawGameChoice();
+            }
+            else if (key.code == "Numpad1") {
+                this.state = "active";
+                this.startGame();
+            }
+        }
+        else if (this.state === "paused"){
+            if (key.code == "Numpad1") {
+                this.interval = setInterval(this.cycle, 1000/this.speed);
+                this.state = "active";
+            }
+            else if (key.code == "Numpad2") {
+                this.state = "active";
+                this.startGame();
+            }
+        }
+        else if (this.state === "active"){
+            if (key.code == "ArrowRight") {
+                if (model.carShift < model.bufferWidth - 1 - model.car[0].length) {
+                    model.carShift++;
+                    this.check();
+                }
+            }
+            else if (key.code == "ArrowLeft") {
+                if (model.carShift > 1){
+                    model.carShift--;
+                    this.check();
+                }
+            }
+            else if (key.code == "Numpad1") {
+                clearInterval(this.interval);
+                this.state = "paused";
+            }
+            else if (key.code == "Numpad2") {
+                this.state = "active";
+                this.startGame();
+            }
+        }
+        else if (this.state === "gameEnd"){
+            if (key.code == "Numpad0") {
+                this.state = "gameChoice";
+                this.deviceOn();
+            }
+            else if (key.code == "Numpad2") {
+                this.state = "active";
+                this.startGame();
             }
         }
     },    
 };
 
-let level1 = {
-    length: 100,
-    //space betveen obstacles: obstacles[i1][j], obstacles[i2][j], i2-i1 >= 8; obstacles shift: obstacles[i][j], 0 >= j >= 5;
+//space betveen obstacles: obstacles[i1][j], obstacles[i2][j], i2-i1 >= 8; obstacles shift: obstacles[i][j], 0 >= j >= 5;
+
+const levelA1 = {
+    length: 100,    
     obstacles: [[10, 3],[18,5],[26, 5],[36,2],[45,4],[55,0],[63,3],[72,2],[80,3],[90,5]]
+}
+
+const levelA2 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA3 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA4 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA5 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA6 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA7 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA8 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA9 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA10 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA11 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA12 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA13 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA14 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
+}
+
+const levelA15 = {
+    length: 100,    
+    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
 }
 
 let model = {
     car: [[1,0,1],[0,1,0],[1,1,1],[0,1,0]],
-    levels: [level1],
-    levelNum: 0,
-    //speed !=0
-    speed: 1,
+    levels: [levelA1, levelA2, levelA3, levelA4, levelA5, levelA6, levelA7, levelA8, levelA9, levelA10, levelA11, levelA12, levelA13, levelA14, levelA15,],
     //first step starts from index 1
     position: 1,
     //car shift > 0 and < bufferWidth - 1 
@@ -104,13 +223,13 @@ let model = {
         }
         //fill borders
         for (let i = 0; i < this.bufferHeight; i++){
-            if (i % 5 !== 3 && i % 5 !==4){
+            if (i % 3 !== 2){
                 this.buffer[i][0] = 1;
                 this.buffer[i][this.bufferWidth-1] = 1;
             }
         }
         //fill obstacles
-        let levelObstacles = this.levels[this.levelNum].obstacles;
+        let levelObstacles = this.levels[controller.level - 1].obstacles;
         let currentObstacleStart = levelObstacles[this.currentObstacle][0];
         let currentObstacleEnd = currentObstacleStart + this.obstacleHeight;
         while (this.currentObstacle < levelObstacles.length && currentObstacleStart < this.bufferHeight){
@@ -132,7 +251,7 @@ let model = {
     step(){
         this.buffer.shift();   
         let pushRow = [];        
-        let levelObstacles = this.levels[this.levelNum].obstacles;
+        let levelObstacles = this.levels[controller.level - 1].obstacles;
         if (this.currentObstacle < levelObstacles.length){
             let currentObstacleStart = levelObstacles[this.currentObstacle][0] - this.position;
             let currentObstacleEnd = currentObstacleStart + this.obstacleHeight;
@@ -157,7 +276,7 @@ let model = {
                 }
             }
         }
-        if (this.position % 5 !== 4 && this.position % 5 !== 0){
+        if (this.position % 3 !== 1){
             pushRow[0] = 1;
             pushRow[this.bufferWidth-1] = 1;
         }
@@ -179,20 +298,43 @@ let model = {
         return false;
     },
     finish(){
-        if (this.position > this.levels[this.levelNum].length) {
+        if (this.position > this.levels[controller.level - 1].length) {
             return true;
         }
         else return false;
     },
 };
 
+const letterA = [[7,3],[7,4],[7,5],[8,2],[8,6],[9,2],[9,3],[9,4],[9,5],[9,6],[10,2],[10,6],[11,2],[11,6]];
+
 let view = {
+    gameChoiceLetterTop: 6,
+    gameChoiceLetterBottom: 13,
+    gameChoiceLetters: [letterA],
     clearBackgroundHeight: 13,
     finalTextWin: [[1,1],[1,3],[1,5],[2,1],[2,3],[2,5],[3,1],[3,3],[3,5],[4,1],[4,3],[4,5],[5,2],[5,4],[7,2],[7,4],[7,7],[8,2],[8,4],[8,5],[8,7],[9,2],[9,4],[9,6],[9,7],[10,2],[10,4],[10,7],[11,2],[11,4],[11,7]],
     finalTextLose: [[1,1],[1,5],[1,6],[1,7],[2,1],[2,5],[2,7],[3,1],[3,5],[3,7],[4,1],[4,5],[4,7],[5,1],[5,2],[5,3],[5,5],[5,6],[5,7],[7,2],[7,3],[7,4],[7,6],[7,7],[7,8],[8,2],[8,6],[9,2],[9,3],[9,4],[9,6],[9,7],[10,4],[10,6],[11,2],[11,3],[11,4],[11,6],[11,7],[11,8]],
     drawBuffer: document.getElementsByTagName("td"),
     drawLevelNum: document.getElementsByClassName("levelNum"),
     drawSpeedNum: document.getElementsByClassName("speedNum"),
+    drawGameChoice(){
+        for (let i = 0; i < model.bufferHeight; i++){
+            if (i > this.gameChoiceLetterTop - 1 && i < this.gameChoiceLetterBottom) {
+                for (let j = 0; j < model.bufferWidth; j++){
+                    this.drawBuffer[i * model.bufferWidth + j].setAttribute("class","brick");
+                }
+            }
+            else {
+                for (let j = 0; j < model.bufferWidth; j++){
+                    this.drawBuffer[i * model.bufferWidth + j].removeAttribute("class");
+                }
+            }
+        }
+        let letter = this.gameChoiceLetters[controller.game - 1];
+        for (let i = 0; i < letter.length; i++){
+            this.drawBuffer[letter[i][0] * model.bufferWidth + letter[i][1]].removeAttribute("class");
+        }
+    },
     draw(){
         //road draw
         for (let i = 0; i < model.bufferHeight; i++){
@@ -215,24 +357,20 @@ let view = {
         }
     },
     drawMenu(){    
-        this.drawLevelNum[0].innerHTML = model.levelNum+1;
-        this.drawSpeedNum[0].innerHTML = model.speed;
+        this.drawLevelNum[0].innerHTML = controller.level;
+        this.drawSpeedNum[0].innerHTML = controller.speed;
     },
     drawText(finalText){
         for (let i = 0; i < this.clearBackgroundHeight * model.bufferWidth; i++){
             this.drawBuffer[i].removeAttribute("class");
         }
-        if (finalText === "win"){
-            for (let i = 0; i < this.finalTextWin.length; i++){
-                this.drawBuffer[this.finalTextWin[i][0] * model.bufferWidth + this.finalTextWin[i][1]].setAttribute("class","brick");
-            }
-        }
-        else if (finalText === "lose"){
-            for (let i = 0; i < this.finalTextLose.length; i++){
-                this.drawBuffer[this.finalTextLose[i][0] * model.bufferWidth + this.finalTextLose[i][1]].setAttribute("class","brick");
-            }
+        for (let i = 0; i < finalText.length; i++){
+            this.drawBuffer[finalText[i][0] * model.bufferWidth + finalText[i][1]].setAttribute("class","brick");
         }
     },
 };
 
-window.onload = function() {window.onkeydown = controller.drive;}; 
+window.onload = function() { 
+    controller.deviceOn();
+    window.onkeydown = function(key) { controller.drive(key); }; 
+}; 
