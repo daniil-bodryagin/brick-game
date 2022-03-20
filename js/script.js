@@ -2,12 +2,11 @@ let controller = {
     interval: function(){},
     //states: gameChoice, paused, active, gameEnd
     state: "gameChoice",
-    game: 1,
-    maxGame: 1,
-    level: 1,
+    game: 0,
+    maxGame: 0,
+    level: 0,
     maxLevel: 15,
-    //speed !=0
-    speed: 1,
+    speed: 0,
     maxSpeed: 15,
     deviceOn(){
         view.drawGameChoice();
@@ -18,7 +17,7 @@ let controller = {
         model.init();
         view.draw();
         view.drawMenu();
-        this.interval = setInterval(this.cycle, 1000/this.speed);
+        this.interval = setInterval(this.cycle, 400 - 25 * this.speed);
     },
     cycle(){
         model.step();
@@ -39,12 +38,12 @@ let controller = {
             view.draw();
         }
     },
-    rotate(counter, maxCounter){
+    spin(counter, maxCounter){
         if (counter < maxCounter) {
             counter++;
         }
         else {
-            counter = 1;
+            counter = 0;
         }
         return counter;
     },
@@ -58,15 +57,15 @@ let controller = {
         //Rotate/GameChoice = Numpad0
         if (this.state === "gameChoice"){
             if (key.code == "ArrowRight") {
-                this.speed = this.rotate(this.speed, this.maxSpeed);
+                this.speed = this.spin(this.speed, this.maxSpeed);
                 view.drawMenu();
             }
             else if (key.code == "ArrowLeft") {
-                this.level = this.rotate(this.level, this.maxLevel);
+                this.level = this.spin(this.level, this.maxLevel);
                 view.drawMenu();
             }
             else if (key.code == "Numpad0") {
-                this.game = this.rotate(this.game, this.maxGame);
+                this.game = this.spin(this.game, this.maxGame);
                 view.drawGameChoice();
             }
             else if (key.code == "Numpad1") {
@@ -76,7 +75,7 @@ let controller = {
         }
         else if (this.state === "paused"){
             if (key.code == "Numpad1") {
-                this.interval = setInterval(this.cycle, 1000/this.speed);
+                this.interval = setInterval(this.cycle, 400 - 25 * this.speed);
                 this.state = "active";
             }
             else if (key.code == "Numpad2") {
@@ -119,101 +118,24 @@ let controller = {
     },    
 };
 
-//space betveen obstacles: obstacles[i1][j], obstacles[i2][j], i2-i1 >= 8; obstacles shift: obstacles[i][j], 0 >= j >= 5;
-
-const levelA1 = {
-    length: 100,    
-    obstacles: [[10, 3],[18,5],[26, 5],[36,2],[45,4],[55,0],[63,3],[72,2],[80,3],[90,5]]
-}
-
-const levelA2 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA3 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA4 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA5 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA6 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA7 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA8 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA9 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA10 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA11 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA12 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA13 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA14 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
-const levelA15 = {
-    length: 100,    
-    obstacles: [[11, 1],[19,1],[28, 3],[36,5],[48,0],[55,0],[63,0],[71,5],[83,0],[91,5]]
-}
-
 let model = {
     car: [[1,0,1],[0,1,0],[1,1,1],[0,1,0]],
-    levels: [levelA1, levelA2, levelA3, levelA4, levelA5, levelA6, levelA7, levelA8, levelA9, levelA10, levelA11, levelA12, levelA13, levelA14, levelA15,],
-    //first step starts from index 1
-    position: 1,
+    levels: [],
+    position: 0,
     //car shift > 0 and < bufferWidth - 1 
     carShift: 3,
     buffer: [],
     bufferWidth: 10,
     bufferHeight: 20,
-    obstacleWidth: 3,
-    obstacleHeight: 3,
-    currentObstacle: 0,
+    levelLength: 100,
+    roadStart: 1,
+    roadWidth: 5,
+    roadChangeStep: 5,
     init(){
-        this.position = 1;
+        this.position = 0;
         this.carShift = 3;
+        this.roadStart = 1;
         this.buffer = [];
-        this.currentObstacle = 0;
         //fill buffer by zeroes
         for (let i = 0; i < this.bufferHeight; i++){
             this.buffer[i] = [];
@@ -221,68 +143,32 @@ let model = {
                 this.buffer[i][j] = 0;
             }
         }
-        //fill borders
+        //fill road
         for (let i = 0; i < this.bufferHeight; i++){
-            if (i % 3 !== 2){
-                this.buffer[i][0] = 1;
-                this.buffer[i][this.bufferWidth-1] = 1;
-            }
-        }
-        //fill obstacles
-        let levelObstacles = this.levels[controller.level - 1].obstacles;
-        let currentObstacleStart = levelObstacles[this.currentObstacle][0];
-        let currentObstacleEnd = currentObstacleStart + this.obstacleHeight;
-        while (this.currentObstacle < levelObstacles.length && currentObstacleStart < this.bufferHeight){
-            let i = 0;
-            while (i < this.obstacleHeight && i + currentObstacleStart < this.bufferHeight){
-                for (let j = 1; j < this.bufferWidth - 1; j++){
-                    if (j < levelObstacles[this.currentObstacle][1] + 1 || j > levelObstacles[this.currentObstacle][1] + this.obstacleWidth){
-                        this.buffer[i + currentObstacleStart][j] = 1;
-                    }
+            for (let j = 0; j < this.bufferWidth; j++){
+                if (j < this.roadStart || j >= this.roadStart + this.roadWidth){
+                    this.buffer[i][j] = 1;
                 }
-                i++;
             }
-            this.currentObstacle++;
-            currentObstacleStart = levelObstacles[this.currentObstacle][0];
-            currentObstacleEnd = currentObstacleStart + this.obstacleHeight;
-        }
-        this.currentObstacle--;
+        }                
     },
     step(){
         this.buffer.shift();   
-        let pushRow = [];        
-        let levelObstacles = this.levels[controller.level - 1].obstacles;
-        if (this.currentObstacle < levelObstacles.length){
-            let currentObstacleStart = levelObstacles[this.currentObstacle][0] - this.position;
-            let currentObstacleEnd = currentObstacleStart + this.obstacleHeight;
-            if (currentObstacleStart < this.bufferHeight){
-                if (currentObstacleEnd > this.bufferHeight - 1){
-                    for (let j = 1; j < this.bufferWidth - 1; j++){
-                        if (j < levelObstacles[this.currentObstacle][1] + 1 || j > levelObstacles[this.currentObstacle][1] + this.obstacleWidth){
-                            pushRow[j] = 1;
-                        }
-                    }
-                }
-                else {
-                    for (let j = 1; j < this.bufferWidth - 1; j++){
-                        pushRow[j] = 0;
-                    }
-                    this.currentObstacle++;
-                }
+        let pushRow = [];
+        let roadShift;        
+        if (this.position % this.roadChangeStep === 0){
+            do {
+                roadShift = Math.floor(Math.random() * 5) - 2;
+            } while (this.roadStart + roadShift <= 0 || this.roadStart + this.roadWidth + roadShift >= this.bufferWidth)
+            this.roadStart += roadShift;
+        }
+        for (let j = 0; j < this.bufferWidth; j++){
+            if (j < this.roadStart || j >= this.roadStart + this.roadWidth){
+                pushRow[j] = 1;
             }
             else {
-                for (let j = 1; j < this.bufferWidth - 1; j++){
-                    pushRow[j] = 0;
-                }
+                pushRow[j] = 0;
             }
-        }
-        if (this.position % 3 !== 1){
-            pushRow[0] = 1;
-            pushRow[this.bufferWidth-1] = 1;
-        }
-        else {
-            pushRow[0] = 0;
-            pushRow[this.bufferWidth-1] = 0;
         }
         this.buffer.push(pushRow);
         this.position++;
@@ -298,7 +184,7 @@ let model = {
         return false;
     },
     finish(){
-        if (this.position > this.levels[controller.level - 1].length) {
+        if (this.position > this.levelLength) {
             return true;
         }
         else return false;
@@ -330,7 +216,7 @@ let view = {
                 }
             }
         }
-        let letter = this.gameChoiceLetters[controller.game - 1];
+        let letter = this.gameChoiceLetters[controller.game];
         for (let i = 0; i < letter.length; i++){
             this.drawBuffer[letter[i][0] * model.bufferWidth + letter[i][1]].removeAttribute("class");
         }
