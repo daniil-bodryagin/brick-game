@@ -13,13 +13,12 @@
     font-family: Digital;
     font-style: italic;
     font-size: 40px;
+    display: flex;
 }
 
 .board {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    border: 1px solid black;
+    margin: 24px;
+    border: 2px solid black;
     border-spacing: 0;
 }
 
@@ -29,36 +28,24 @@ td {
     padding: 0;
 }
 
-.levelCap {
-    position: absolute;
-    top: 25px;
-    left: 350px;
-    margin: 0;
-    line-height: 50px;
+.menu {
+    margin: 25px 10px 0 0;
+    width: 138px;
+    display: flex;
+    flex-direction: column;
 }
 
-.levelNum {
-    position: absolute;
-    top: 75px;
-    left: 350px;
+.menuItem {
     margin: 0;
-    line-height: 50px;
+    min-height: 50px;
 }
 
-.speedCap {
-    position: absolute;
-    top: 125px;
-    left: 350px;
-    margin: 0;
-    line-height: 50px;
+.menuItemNumbers {
+    text-align: right;
 }
 
-.speedNum {
-    position: absolute;
-    top: 175px;
-    left: 350px;
-    margin: 0;
-    line-height: 50px;
+.hidden {
+    visibility: hidden;
 }
 
 .brick {
