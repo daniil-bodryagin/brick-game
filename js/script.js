@@ -1,23 +1,24 @@
+//should I use separate js-files for every object and constants?
 let controller = {
     interval: function(){},
-    //states: gameChoice, paused, active - is it nessesary to make a constant enumeration for them?
+    //states: gameChoice, paused, active, avimation - is it nessesary to make a constant object for them?
     state: "gameChoice",
     score: 0,
     maxScore: 0,
-    //Two dummy values. Later the array with different games will be added.
+    //(two dummy values - array with different games is in production)
     game: 0,
     maxGame: 0,
-    //maxLevel variable changes from game to game, so it's a model property - should I make here a variable, get maxLevel value from model and put in this variable?
+    //maxLevel variable changes from game to game, so it's a model property - should I make here a variable to put maxLevel value from the model in it?
     level: 0,
     speed: 0,
     maxSpeed: 15,
-    scoreReward: 100,
-    speedGrowReward: 1000,
-    lives: 5,
+    scoreReward: 1,
+    speedGrowReward: 10,
+    lives: 0,
     chooseGame(){
         this.state = "gameChoice";
-        view.drawGameChoice();
         view.drawMenu();
+        view.drawGameChoice();        
     },
     startGame(){
         this.score = 0;
@@ -26,11 +27,11 @@ let controller = {
     },
     startRound(){
         model.init();
-        view.drawField();
         view.drawMenu();
+        view.drawField();
         this.startLoop();
     },
-    //the only function where context doesn't allow use "this" - is it better to use "that" or to call controller methods literally (e.g. controller.spin())?
+    //the function where context doesn't allow use "this" - is it better to use "that" or to call controller methods literally (e.g. controller.spin())?
     startLoop(){
         clearInterval(this.interval);
         this.state = "active";
@@ -53,25 +54,28 @@ let controller = {
     check(){
         if (model.collision()) {
             clearInterval(this.interval);
-            //veiw collision animation
-            //view.drawUpDown();
-            if (this.lives > 1) {
-                this.lives--;
-                this.startRound();
-            }
-            else {
-                this.lives = 5;
-                if (this.score > this.maxScore) {
-                    this.maxScore = this.score;
-                }
-                this.chooseGame();
-            }
+            this.state = "animation";
+            view.drawMenu();
+            view.drawExplode();            
         }
         else {
-            view.drawField();
             view.drawMenu();
+            view.drawField();            
         }
         console.log(this.lives);
+    },
+    endRound(){
+        this.lives--;
+        if (this.lives > 0) {
+            this.startRound();
+        }
+        else {
+            if (this.score > this.maxScore) {
+                this.maxScore = this.score;
+            }
+            //this function is visual effect but interrupts normal controller's work and forces to create additional function endRound(), which starts after animation finish - what architecture could solve this? Should I use promises instead?
+            view.drawUpDown();
+        }
     },
     //function just to spin counters like speed, level etc.
     spin(counter, maxCounter){
@@ -127,7 +131,8 @@ let controller = {
                 this.check();
             }
             else if (key.code == "Numpad1") {
-                this.state = "paused";                
+                this.state = "paused"; 
+                view.drawMenu();
                 clearInterval(this.interval);
             }
             else if (key.code == "Numpad2") {
@@ -236,11 +241,13 @@ let model = {
     left() {
         if (this.carLeftOffset > 1){
             this.carLeftOffset--;
+            this.fillBackBuffer();
         }
     },
     right() {
         if (this.carLeftOffset < this.bufferWidth - 1 - this.car[0].length) {
             this.carLeftOffset++;
+            this.fillBackBuffer();
         }
     },
     collision(){
@@ -262,9 +269,18 @@ let view = {
     gameChoiceLetterTop: 6,
     gameChoiceLetterBottom: 13,
     gameChoiceLetters: [letterA],
-    drawBuffer: document.getElementsByClassName("field-cell"),
-    drawMenuLines: document.getElementsByClassName("menuItem"),
+    liveGrid: [14,12,9,6,4],
+    drawBuffer: [],
+    drawMenuItems: [],
+    drawMenuBuffer: [],
+    init(){
+        this.drawBuffer = document.querySelectorAll(".field-cell");
+        //would it be better to create object for menu fith named fields for every meny item?
+        this.drawMenuItems = document.querySelectorAll(".menu *");
+        this.drawMenuBuffer = document.querySelectorAll(".next-figure-cell");
+    },
     drawGameChoice(){
+        console.log(this.drawMenuItems);        
         for (let i = 0; i < model.bufferHeight; i++){
             if (i > this.gameChoiceLetterTop - 1 && i < this.gameChoiceLetterBottom) {
                 for (let j = 0; j < model.bufferWidth; j++){
@@ -282,26 +298,37 @@ let view = {
             this.drawBuffer[letter[i][0] * model.bufferWidth + letter[i][1]].classList.remove("brick");
         }
     },
+    //another functions with context problem
     drawUpDown(){
-        let animationFinished = false;
         let i = 0;
-        intervalAnimation = setInterval(function(){
-            if (i < model.bufferHeight){                
-                for (let j = 0; j < model.bufferWidth; i++){
+        let steps = 0;
+        that = this;
+        this.intervalAnimation = setInterval(function(){
+            if (steps < model.bufferHeight){
+                for (let j = 0; j < model.bufferWidth; j++){
                     model.backBuffer[i][j] = 1;
                 }
                 i++;
+                steps++;
+                that.drawField();
             }
-            else if (i > -1) {
-                for (let j = 0; j < model.bufferWidth; i++){
+            else if (steps >= model.bufferHeight && steps < model.bufferHeight * 2) {
+                i--;                
+                for (let j = 0; j < model.bufferWidth; j++){
                     model.backBuffer[i][j] = 0;
                 }
-                i--;
+                steps++;
+                that.drawField();
             }
-            else if (i === -1) {
-                clearInterval(intervalAnimation);
+            else if (steps === model.bufferHeight * 2) {
+                clearInterval(that.intervalAnimation);
+                controller.chooseGame();
             }
-        }, 1000);
+        }, 50);
+    },
+    //function is in production
+    drawExplode(){
+        controller.endRound();
     },
     drawField(){
         for (let i = 0; i < model.bufferHeight; i++){
@@ -316,28 +343,51 @@ let view = {
         }
     },
     drawMenu(){
+        console.log(controller.lives + " view " + controller.state);
+        
+        if (controller.state === "active") {
+            this.drawMenuItems[1].innerHTML = String(controller.score).padStart(4, '0');
+            this.drawMenuItems[4].classList.add("hidden");
+            for (let i = 0; i < this.liveGrid.length; i++) {
+                if (controller.lives > i) {
+                    this.drawMenuBuffer[this.liveGrid[i]].classList.add("next-figure-brick");
+                }
+                else {
+                    this.drawMenuBuffer[this.liveGrid[i]].classList.remove("next-figure-brick");
+                }
+                console.log(controller.lives > i);
+            }
+            
+            this.drawMenuItems[44].classList.add("hidden");
+            this.drawMenuItems[45].classList.add("hidden");
+        }
+        
+        else if (controller.state === "gameChoice") {
+            this.drawMenuItems[1].innerHTML = String(controller.maxScore).padStart(4, '0');
+            this.drawMenuItems[4].classList.remove("hidden");
+        }   
+
+        else if (controller.state === "paused"){
+            this.drawMenuItems[44].classList.remove("hidden");
+            this.drawMenuItems[45].classList.remove("hidden");
+        }
+        
+        this.drawMenuItems[36].innerHTML = controller.speed;
+        
         if (model.maxLevel === 0) {
-            this.drawMenuLines[2].classList.add("hidden");
-            this.drawMenuLines[3].classList.add("hidden");
+            this.drawMenuItems[37].classList.add("hidden");
+            this.drawMenuItems[38].classList.add("hidden");
         }
         else {
-            this.drawMenuLines[2].classList.remove("hidden");
-            this.drawMenuLines[3].classList.remove("hidden");
-        }
-        if (controller.state === "active") {
-            this.drawMenuLines[0].innerHTML = "score";
-            this.drawMenuLines[1].innerHTML = controller.score;
-        }
-        else if (controller.state === "gameChoice") {
-            this.drawMenuLines[0].innerHTML = "hi-score";
-            this.drawMenuLines[1].innerHTML = controller.maxScore;
-        }
-        this.drawMenuLines[3].innerHTML = controller.level;
-        this.drawMenuLines[5].innerHTML = controller.speed;
+            this.drawMenuItems[37].innerHTML = controller.level;
+            this.drawMenuItems[37].classList.remove("hidden");
+            this.drawMenuItems[38].classList.remove("hidden");
+        }        
     },
 };
 
-window.onload = function() { 
+window.onload = function() {
+    view.init();
     controller.chooseGame();
     window.onkeydown = function(key) { controller.drive(key); }; 
 }; 
