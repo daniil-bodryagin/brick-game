@@ -760,4 +760,12 @@ window.onload = function() {
     view.init("window.onload");
     controller.deviceOn("window.onload");
     window.onkeydown = function(key) { controller.drive(key); }; 
+    //something beyond the object model of app
+    let hintButton = document.querySelector(".hint");
+    let keyboardMap = document.querySelector(".keyboardmap");
+    hintButton.onclick = function (){
+        if (controller.state != "active"){
+            keyboardMap.classList.toggle("open");
+        }
+    }
 }; 

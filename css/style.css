@@ -18,6 +18,10 @@
     --gray: #b3c8c1;
 }
 
+body {
+    background: no-repeat center center url(../img/bg.jpg);
+}
+
 .container {
     width: 1091px; /*prop*/
     height: 100vh;
@@ -254,15 +258,19 @@
 }
 
 .hint {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     right: 0;
     width: 200px; /*prop*/
     height: 200px; /*prop*/
-    background: var(--black);
+    background-color: var(--black);
     border-top-left-radius: 30px; /*prop*/
     border-top-right-radius: 30px; /*prop*/
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 11;
 }
 
 .hint:hover{
@@ -273,7 +281,6 @@
     font-family: "Baumans", sans-serif;
     font-size: 25px; /*prop*/
     color: var(--green);
-    z-index: 1000;
     animation-name: flicker;
     animation-duration: 2s;
     animation-iteration-count: infinite;
@@ -282,18 +289,48 @@
 
 @keyframes flicker {
     from {text-shadow: none;}
-    50% {text-shadow: 0px 0px 10px var(--yellow);} /*prop*/
+    /*50% {text-shadow: 0px 0px 10px var(--yellow);}*/
+    50% {text-shadow: 0px 0px 10px #f9fe9a;} /*prop*/
     to {text-shadow: none;}
 }
 
-.keyboardmap {
-    text-align: center;
-    width: 100%;
-    background-color: var(--black);
-    position: absolute;
-    top: 1vh;
+.hint-imagecontainer {
+    width: 110px; /*prop*/
+    height: 110px; /*prop*/
+    display: flex;
+    align-items: center;
 }
 
-.hint-imagecontainer {
-    display: inline-block;
+svg {
+    fill: var(--yellow);
+    max-width: 100%;
+    height: auto;
+}
+
+.keyboardmap {
+    width: 1091px; /*prop*/
+    height: 100vh;
+    margin: 0 auto;
+    padding: 150px; /*prop*/
+    background-color: var(--black);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: 100px; /*prop*/
+    border-top-right-radius: 100px; /*prop*/
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%);
+    z-index: -1;
+}
+
+.keyboardmap-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.open {
+    z-index: 10;
 }
