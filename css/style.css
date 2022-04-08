@@ -19,7 +19,7 @@
 }
 
 body {
-    background: no-repeat center center url(../img/bg.jpg);
+    background: url(../img/bg.jpg) center center / cover;
 }
 
 .container {
@@ -45,7 +45,7 @@ body {
     color: var(--blue);
     font-size: 58px; /*prop*/
     font-family: "Baumans", sans-serif;
-    padding: 0 20px;
+    padding: 0 20px; /*prop*/
     background-color: var(--black);
     display: inline-block;
     z-index: 1;
@@ -55,11 +55,11 @@ body {
     display: flex;
     justify-content: center;
     position: relative;
-    margin-top: -35px;
+    margin-top: -35px; /*prop*/
 }
 
 .sidedecor {
-    border-spacing: 6px;
+    border-spacing: 6px; /*prop*/
 }
 
 .sidedecor-cell {
@@ -72,8 +72,8 @@ body {
 }
 
 .sidedecor-cellcore {
-    width: 38px;
-    height: 38px;
+    width: 38px; /*prop*/
+    height: 38px; /*prop*/
     border-top: 5px solid var(--black); /*prop*/
     border-left: 7px solid var(--black); /*prop*/
     border-bottom: 12px solid var(--black); /*prop*/
@@ -103,14 +103,14 @@ body {
     justify-content: center;
     width: 440px; /*prop*/
     height: 650px; /*prop*/
-    margin-top: 70px;
+    margin-top: 70px; /*prop*/
     background-color: var(--gray);
 }
 
 .field {
     border: 3px solid var(--black); /*prop*/
     border-spacing: 0;
-    margin-top: 25px;
+    margin-top: 25px; /*prop*/
 }
 
 .field-cell {
@@ -118,9 +118,8 @@ body {
     height: 30px; /*prop*/
 }
 
-
 .brick {
-    background: no-repeat center center url(../img/brick.png);
+    background: url(../img/brick30.png) center center no-repeat;
 }
 
 .hidden {
@@ -128,7 +127,7 @@ body {
 }
 
 .menu {
-    margin-top: 25px;
+    margin-top: 25px; /*prop*/
     width: 116px; /*prop*/
 }
 
@@ -207,7 +206,7 @@ body {
 }
 
 .next-figure-brick {
-    background: no-repeat center center url(../img/menuBrick.png);
+    background: url(../img/menuBrick25.png) center center no-repeat;
 }
 
 .speed-level-etc {
@@ -333,4 +332,405 @@ svg {
 
 .open {
     z-index: 10;
+}
+
+@media screen and (orientation: portrait) and (min-width: 750px) and (max-width: 1100px), (orientation: landscape) and (min-height: 650px) and (max-height: 950px){
+    .container {
+        width: 727px; /*prop*/
+        border-top-left-radius: 67px; /*prop*/
+        border-top-right-radius: 67px; /*prop*/
+    }
+    
+    .title{
+        font-size: 47px; /*prop*/
+    }
+    
+    .super {
+        font-size: 39px; /*prop*/
+        padding: 0 13px; /*prop*/
+    }
+    
+    .content {
+        margin-top: -23px; /*prop*/
+    }
+    
+    .sidedecor {
+        border-spacing: 4px; /*prop*/
+    }
+    
+    .sidedecor-cell {
+        width: 32px; /*prop*/
+        height: 32px; /*prop*/
+    }
+
+    .sidedecor-cellcore {
+        width: 25px;
+        height: 25px;
+        border-top: 3px solid var(--black); /*prop*/
+        border-left: 5px solid var(--black); /*prop*/
+        border-bottom: 8px solid var(--black); /*prop*/
+        border-right: 5px solid var(--black); /*prop*/
+        margin: 0 3px; /*prop*/
+    }
+
+    .center {
+        width: 447px; /*prop*/
+        height: 546px; /*prop*/
+        border: 9px solid var(--yellow); /*prop*/
+        margin: 0 9px; /*prop*/
+    }
+
+    .screen {
+        width: 293px; /*prop*/
+        height: 433px; /*prop*/
+        margin-top: 47px; /*prop*/
+    }
+
+    .field {
+        border: 2px solid var(--black); /*prop*/
+        margin-top: 17px; /*prop*/
+    }
+
+    .field-cell {
+        width: 20px; /*prop*/
+        height: 20px; /*prop*/
+    }
+    
+    .brick {
+        background: url(../img/brick20.png) center center no-repeat;
+    }
+
+    .menu {
+        margin-top: 17px; /*prop*/
+        width: 77px; /*prop*/
+    }
+
+    .menu-numbers {
+        font-size: 23px; /*prop*/
+        line-height: 23px; /*prop*/
+    }
+
+    .score-numbers {
+        margin-bottom: 10px; /*prop*/
+    }
+
+    .menu-text {
+        font-size: 11px; /*prop*/
+    }
+
+    .thin-line {
+        line-height: 13px; /*prop*/
+    }
+
+    .thick-line {
+        line-height: 17px; /*prop*/
+    }
+
+    .hi {
+        width: 27px; /*prop*/
+    }
+
+    .melody {
+        width: 24px; /*prop*/
+        padding-right: 3px; /*prop*/
+    }
+
+    .melody img {
+        width: 10px; /*prop*/
+        height: 9px; /*prop*/
+    }
+
+    .lines {
+        margin-bottom: 3px; /*prop*/
+    }
+
+    .next-figure {
+        margin: 8px; /*prop*/
+    }
+
+    .next-figure-cell {
+        width: 17px; /*prop*/
+        height: 17px; /*prop*/
+    }
+    
+    .next-figure-brick {
+        background: url(../img/menuBrick17.png) center center no-repeat;
+    }
+
+    .speed-level-etc {
+        margin-left: 16px; /*prop*/
+    }
+
+    .speed-value, .level-value {
+        width: 47px; /*prop*/
+    }
+
+    .level-value {
+        margin-top: 10px; /*prop*/
+    }
+
+    .arrows {
+        width: 51px; /*prop*/
+        height: 27px; /*prop*/
+    }
+
+    .arrows img {
+        width: 38px; /*prop*/
+        height: 15px; /*prop*/
+    }
+
+    .pause {
+        width: 51px; /*prop*/
+        font-size: 13px; /*prop*/
+        line-height: 13px; /*prop*/
+        margin-top: 4px; /*prop*/
+    }
+
+    .cup {
+        width: 51px; /*prop*/
+        margin-top: 9px; /*prop*/
+    }
+
+    .cup img {
+        width: 51px; /*prop*/
+        height: 24px; /*prop*/
+    }
+
+    .hint {
+        width: 133px; /*prop*/
+        height: 133px; /*prop*/
+        border-top-left-radius: 20px; /*prop*/
+        border-top-right-radius: 20px; /*prop*/
+    }
+
+    .hint-text {
+        font-size: 17px; /*prop*/
+    }
+
+    @keyframes flicker {
+        from {text-shadow: none;}
+        /*50% {text-shadow: 0px 0px 10px var(--yellow);}*/
+        50% {text-shadow: 0px 0px 7px #f9fe9a;} /*prop*/
+        to {text-shadow: none;}
+    }
+
+    .hint-imagecontainer {
+        width: 73px; /*prop*/
+        height: 73px; /*prop*/
+    }
+
+    .keyboardmap {
+        width: 727px; /*prop*/
+        padding: 100px; /*prop*/
+        border-top-left-radius: 67px; /*prop*/
+        border-top-right-radius: 67px; /*prop*/
+    }
+
+
+}
+
+@media screen and (max-width: 750px) and (orientation: portrait), (max-height: 650px) and (orientation: landscape){
+    .container {
+        width: 485px; /*prop*/
+        border-top-left-radius: 44px; /*prop*/
+        border-top-right-radius: 44px; /*prop*/       
+    }
+    
+    .title {
+        font-size: 31px; /*prop*/
+    }
+    
+    .super {
+        font-size: 26px; /*prop*/
+        padding: 0 9px; /*prop*/
+    }
+    
+    .content {
+        margin-top: -16px; /*prop*/
+    }
+    
+    .sidedecor {
+        border-spacing: 3px; /*prop*/
+    }
+    
+    .sidedecor-cell {
+        width: 21px; /*prop*/
+        height: 21px; /*prop*/
+    }
+
+    .sidedecor-cellcore {
+        width: 17px;
+        height: 17px;
+        border-top: 2px solid var(--black); /*prop*/
+        border-left: 3px solid var(--black); /*prop*/
+        border-bottom: 5px solid var(--black); /*prop*/
+        border-right: 3px solid var(--black); /*prop*/
+        margin: 0 2px; /*prop*/
+    }
+
+    .center {
+        width: 298px; /*prop*/
+        height: 365px; /*prop*/
+        border: 6px solid var(--yellow); /*prop*/
+        margin: 0 6px; /*prop*/
+    }
+
+    .screen {
+        width: 196px; /*prop*/
+        height: 289px; /*prop*/
+        margin-top: 31px; /*prop*/
+    }
+
+    .field {
+        border: 4px solid var(--black); /*prop*/
+        margin-top: 11px; /*prop*/
+    }
+
+    .field-cell {
+        width: 13px; /*prop*/
+        height: 13px; /*prop*/
+    }
+    
+    .brick {
+        background: url(../img/brick13.png) center center no-repeat;
+    }
+
+    .menu {
+        margin-top: 11px; /*prop*/
+        width: 52px; /*prop*/
+    }
+
+    .menu-numbers {
+        font-size: 15px; /*prop*/
+        line-height: 15px; /*prop*/
+    }
+
+    .score-numbers {
+        margin-bottom: 7px; /*prop*/
+    }
+
+    .menu-text {
+        font-size: 7px; /*prop*/
+    }
+
+    .thin-line {
+        line-height: 8px; /*prop*/
+    }
+
+    .thick-line {
+        line-height: 11px; /*prop*/
+    }
+
+    .hi {
+        width: 18px; /*prop*/
+    }
+
+    .melody {
+        width: 16px; /*prop*/
+        padding-right: 2px; /*prop*/
+    }
+
+    .melody img {
+        width: 7px; /*prop*/
+        height: 6px; /*prop*/
+    }
+
+    .lines {
+        margin-bottom: 2px; /*prop*/
+    }
+
+    .next-figure {
+        margin: 5px; /*prop*/
+    }
+
+    .next-figure-cell {
+        width: 11px; /*prop*/
+        height: 11px; /*prop*/
+    }
+    
+    .next-figure-brick {
+        background: url(../img/menuBrick11.png) center center no-repeat;
+    }
+
+    .speed-level-etc {
+        margin-left: 11px; /*prop*/
+    }
+
+    .speed-value, .level-value {
+        width: 31px; /*prop*/
+    }
+
+    .level-value {
+        margin-top: 7px; /*prop*/
+    }
+
+    .arrows {
+        width: 34px; /*prop*/
+        height: 18px; /*prop*/
+    }
+
+    .arrows img {
+        width: 25px; /*prop*/
+        height: 10px; /*prop*/
+    }
+
+    .pause {
+        width: 34px; /*prop*/
+        font-size: 9px; /*prop*/
+        line-height: 9px; /*prop*/
+        margin-top: 3px; /*prop*/
+    }
+
+    .cup {
+        width: 34px; /*prop*/
+        margin-top: 6px; /*prop*/
+    }
+
+    .cup img {
+        width: 34px; /*prop*/
+        height: 16px; /*prop*/
+    }
+
+    .hint {
+        width: 89px; /*prop*/
+        height: 89px; /*prop*/
+        border-top-left-radius: 13px; /*prop*/
+        border-top-right-radius: 13px; /*prop*/
+    }
+
+    .hint-text {
+        font-size: 11px; /*prop*/
+    }
+
+    @keyframes flicker {
+        from {text-shadow: none;}
+        /*50% {text-shadow: 0px 0px 10px var(--yellow);}*/
+        50% {text-shadow: 0px 0px 4px #f9fe9a;} /*prop*/
+        to {text-shadow: none;}
+    }
+
+    .hint-imagecontainer {
+        width: 49px; /*prop*/
+        height: 49px; /*prop*/
+    }
+
+    .keyboardmap {
+        width: 485px; /*prop*/
+        padding: 67px; /*prop*/
+        border-top-left-radius: 44px; /*prop*/
+        border-top-right-radius: 44px; /*prop*/
+    }
+    
+@media screen and (max-width: 500px) and (orientation: portrait), (max-height: 500px) and (orientation: landscape){
+    .container {
+        width: 320px;
+    }
+    .sidedecor {
+        display: none;
+    }
+    .keyboardmap {
+        width: 320px;
+    }
+}
+
 }
